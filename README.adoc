@@ -1,0 +1,90 @@
+= Micronaut Snitch
+
+Micronaut snitch helps you to keep track of running asynchronous jobs (Quarts, Scheduled).
+
+== Instalation
+
+----
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.agorapulse:micronaut-snitch:0.1.0'
+}
+----
+
+== Configuration
+
+By default, the events are sent to Dead Man's Snitch (https://deadmanssnitch.com/).
+You can set alternative URL by setting `snitch.url`.
+
+You need to configure at least one id for the reporting:
+
+----
+snitches:
+    id: mydmsid
+----
+
+Alternatively you can specify more ids for multiple jobs:
+
+----
+snitches:
+    jobs:
+        cafebabe:
+            id: javababy
+        babecafe:
+            id: babycino
+----
+
+== Usage
+
+The simples use case is to use `@Snitch` annotation on the method executed by the job.
+
+----
+@Snitch
+void doSomething() {
+    /// do something
+}
+----
+
+If you have multiple configuration you should specify which one to use:
+
+----
+@Snitch("babecafe")
+void doSomething() {
+    /// do something
+}
+----
+
+By default, the provider is notified after the method execution, you can change this using `before` property
+of the annotation. In such a case, the report will only send successful messages even if there were an error during the execution.
+
+----
+@Snitch(before = true)
+void doSomething() {
+    /// do something reported at the beginning
+}
+----
+
+You may also inject `SnitchService` directly into your service. For multiple configurations environment
+use `@Named` annotation to retrieve the proper instance:
+
+----
+
+@Singleton
+class MyService {
+
+    @Named("babecafe")
+    private final SnitchService snitchService;
+
+    public MyService(SnitchService snitchService) {
+        this.snitchService = snitchService;
+    }
+
+    void doSomething() {
+        // do something
+        snitchService.snitch();
+    }
+}
+----

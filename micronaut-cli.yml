@@ -1,0 +1,5 @@
+profile: service
+defaultPackage: agorapulse.micronaut.snitch
+---
+testFramework: spock
+sourceLanguage: java
