@@ -20,8 +20,8 @@ public class DefaultSnitchService implements SnitchService {
     private final SnitchClient client;
     private final SnitchJobConfiguration configuration;
 
-    private long lastSuccessfulCallTime = 0;
-    private long lastTooManyRequestsCallTime = 0;
+    private long lastSuccessfulCallTime;
+    private long lastTooManyRequestsCallTime;
 
     public DefaultSnitchService(SnitchClient client, SnitchJobConfiguration configuration) {
         this.client = client;
