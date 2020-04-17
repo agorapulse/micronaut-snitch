@@ -1,5 +1,7 @@
 package com.agorapulse.micronaut.snitch;
 
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +20,8 @@ public class DefaultSnitchService implements SnitchService {
     private final SnitchClient client;
     private final SnitchJobConfiguration configuration;
 
-    private long lastSuccessfulCallTime;
+    private long lastSuccessfulCallTime = 0;
+    private long lastTooManyRequestsCallTime = 0;
 
     public DefaultSnitchService(SnitchClient client, SnitchJobConfiguration configuration) {
         this.client = client;
@@ -27,20 +30,31 @@ public class DefaultSnitchService implements SnitchService {
 
     @Override
     public boolean snitch(boolean success) {
-        if (lastSuccessfulCallTime > 0 && lastSuccessfulCallTime + CALL_INTERVAL > System.currentTimeMillis()) {
+        if (isRequestAlreadyDoneRecently(lastSuccessfulCallTime) || isRequestAlreadyDoneRecently(lastTooManyRequestsCallTime)) {
             return true;
         }
         try {
-            boolean lastSuccessfulCall = OK.equals(client.snitch(configuration.getId(), success ? "1" : "0"));
+            boolean lastSuccessfulCall = OK.equals(client.snitch(configuration.getId(), success ? "0" : "1"));
 
             if (lastSuccessfulCall) {
                 lastSuccessfulCallTime = System.currentTimeMillis();
             }
 
             return lastSuccessfulCall;
+        } catch (HttpClientResponseException ex) {
+            if (ex.getStatus() == HttpStatus.TOO_MANY_REQUESTS) {
+                this.lastTooManyRequestsCallTime = System.currentTimeMillis();
+            } else {
+                LOGGER.warn("Exception notifying snitch " + configuration.getName(), ex);
+            }
+            return false;
         } catch (Exception ex) {
             LOGGER.warn("Exception notifying snitch " + configuration.getName(), ex);
             return false;
         }
+    }
+
+    private boolean isRequestAlreadyDoneRecently(long callTime) {
+        return callTime > 0 && callTime + CALL_INTERVAL > System.currentTimeMillis();
     }
 }

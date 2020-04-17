@@ -80,7 +80,7 @@ class SnitchServiceSpec extends Specification {
         when:
             assert context.getBean(SnitchService).snitch()
         then:
-            1 * client.snitch('cafebabe', '1') >> DefaultSnitchService.OK
+            1 * client.snitch('cafebabe', '0') >> DefaultSnitchService.OK
     }
 
     void 'test default config interceptor success'() {
@@ -99,7 +99,7 @@ class SnitchServiceSpec extends Specification {
 
             tester.success()
         then:
-            1 * client.snitch('cafebabe', '1') >> DefaultSnitchService.OK
+            1 * client.snitch('cafebabe', '0') >> DefaultSnitchService.OK
     }
 
     void 'test default config interceptor failure'() {
@@ -120,7 +120,27 @@ class SnitchServiceSpec extends Specification {
         then:
             thrown(IllegalStateException)
 
-            1 * client.snitch('cafebabe', '0') >> DefaultSnitchService.OK
+            1 * client.snitch('cafebabe', '1') >> DefaultSnitchService.OK
+    }
+
+    void 'test rate limit success'() {
+        given:
+        context = ApplicationContext
+                .build()
+                .properties(
+                        'snitches.id': 'cafebabe'
+                )
+                .build()
+                .registerSingleton(SnitchClient, client)
+                .start()
+
+        when:
+        SnitchTester tester = context.getBean(SnitchTester)
+
+        tester.success()
+        tester.success() // Should not call
+        then:
+        1 * client.snitch('cafebabe', '0') >> DefaultSnitchService.OK
     }
 
     void 'test multiple config'() {
@@ -138,12 +158,12 @@ class SnitchServiceSpec extends Specification {
         when:
             assert context.getBean(SnitchService, Qualifiers.byName('cafebabe')).snitch()
         then:
-            1 * client.snitch('cafebabe', '1') >> DefaultSnitchService.OK
+            1 * client.snitch('cafebabe', '0') >> DefaultSnitchService.OK
 
         when:
             assert context.getBean(SnitchService, Qualifiers.byName('babecafe')).snitch(false)
         then:
-            1 * client.snitch('babecafe', '0') >> DefaultSnitchService.OK
+            1 * client.snitch('babecafe', '1') >> DefaultSnitchService.OK
     }
 
     void 'test multiple config annotation driven'() {
@@ -162,7 +182,7 @@ class SnitchServiceSpec extends Specification {
             SnitchTester tester = context.getBean(SnitchTester)
             tester.successBabecafe()
         then:
-            1 * client.snitch('babecafe', '1') >> DefaultSnitchService.OK
+            1 * client.snitch('babecafe', '0') >> DefaultSnitchService.OK
     }
 
     void 'test multiple and default config'() {
@@ -181,23 +201,23 @@ class SnitchServiceSpec extends Specification {
         when:
             assert context.getBean(SnitchService, Qualifiers.byName('default')).snitch()
         then:
-            1 * client.snitch('foobar', '1') >> DefaultSnitchService.OK
+            1 * client.snitch('foobar', '0') >> DefaultSnitchService.OK
 
         when:
             assert context.getBean(SnitchService, Qualifiers.byName('cafebabe')).snitch()
         then:
-            1 * client.snitch('cafebabe', '1') >> DefaultSnitchService.OK
+            1 * client.snitch('cafebabe', '0') >> DefaultSnitchService.OK
 
         when:
             assert context.getBean(SnitchService, Qualifiers.byName('cafebabe')).snitch()
         then:
             // call within grace period - no call to the backend
-            0 * client.snitch('cafebabe', '1') >> DefaultSnitchService.OK
+            0 * client.snitch('cafebabe', '0') >> DefaultSnitchService.OK
 
         when:
             assert !context.getBean(SnitchService, Qualifiers.byName('babecafe')).snitch(false)
         then:
-            1 * client.snitch('babecafe', '0') >> { throw new IllegalStateException('failed') }
+            1 * client.snitch('babecafe', '1') >> { throw new IllegalStateException('failed') }
     }
 
 }
