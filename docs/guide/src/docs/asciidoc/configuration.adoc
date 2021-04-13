@@ -1,0 +1,23 @@
+[[_configuration]]
+= Configuration
+
+By default, the events are sent to Dead Man's Snitch (https://deadmanssnitch.com/).
+You can set alternative URL by setting `snitch.url`.
+
+You need to configure at least one id for the reporting:
+
+----
+snitches:
+    id: mydmsid
+----
+
+Alternatively you can specify more ids for multiple jobs:
+
+----
+snitches:
+    jobs:
+        cafebabe:
+            id: javababy
+        babecafe:
+            id: babycino
+----

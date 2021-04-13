@@ -102,6 +102,7 @@
         <module name="MethodTypeParameterName">
             <property name="format" value="^[A-Z]+$"/>
         </module>
+
         <!-- allows suppressing using the //CHECKSTYLE:ON //CHECKSTYLE:OFF -->
         <module name="SuppressionCommentFilter"/>
     </module>

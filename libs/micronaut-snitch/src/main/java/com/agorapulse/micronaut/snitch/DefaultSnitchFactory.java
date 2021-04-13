@@ -1,0 +1,56 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright 2020-2021 Agorapulse.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.agorapulse.micronaut.snitch;
+
+import io.micronaut.context.annotation.*;
+
+import javax.inject.Named;
+import javax.inject.Singleton;
+
+/**
+ * Factory for built-in snitch services.
+ */
+@Factory
+public class DefaultSnitchFactory {
+
+    @EachBean(SnitchJobConfiguration.class)
+    @Requires(property = "snitches.jobs")
+    public SnitchService snitchService(SnitchClient client, SnitchJobConfiguration configuration) {
+        return new DefaultSnitchService(client, configuration);
+    }
+
+    @Bean
+    @Singleton
+    @Named("default")
+    @Requires(property = "snitches.id")
+    public SnitchService defaultSnitchService(SnitchClient client, @Value("${snitches.id}") String id) {
+        SnitchJobConfiguration configuration = new SnitchJobConfiguration("default");
+        configuration.setId(id);
+        return new DefaultSnitchService(client, configuration);
+    }
+
+    @Bean
+    @Secondary
+    @Singleton
+    @Named("default")
+    @Requires(missingProperty = "snitches.id")
+    public SnitchService noopSnitchService() {
+        return NoopSnitchService.INSTANCE;
+    }
+
+}
