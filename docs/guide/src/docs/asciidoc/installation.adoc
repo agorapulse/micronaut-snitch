@@ -1,0 +1,13 @@
+[[_installation_]]
+= Installation
+
+
+----
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.agorapulse:micronaut-snitch:{project-version}'
+}
+----

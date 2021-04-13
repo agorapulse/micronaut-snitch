@@ -1,13 +1,23 @@
-Thumbs.db
-.DS_Store
-.gradle
+
+# Gradle
 build/
-target/
-out/
-.idea
+.gradle/
+
+# IDEs
+
+*.c9
 *.iml
 *.ipr
 *.iws
-.project
-.settings
-.classpath
+*.vscode
+.idea/
+.asscache
+MANIFEST.MF
+out
+
+# PAW
+*.paw
+
+# Redis
+*.rdb
+
