@@ -18,6 +18,8 @@
 package com.agorapulse.micronaut.snitch;
 
 import io.micronaut.context.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -27,6 +29,8 @@ import javax.inject.Singleton;
  */
 @Factory
 public class DefaultSnitchFactory {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSnitchFactory.class);
 
     @EachBean(SnitchJobConfiguration.class)
     @Requires(property = "snitches.jobs")
@@ -49,7 +53,11 @@ public class DefaultSnitchFactory {
     @Singleton
     @Named("default")
     @Requires(missingProperty = "snitches.id")
-    public SnitchService noopSnitchService() {
+    public SnitchService noopSnitchService(@Value("${snitches.disabled:false}") boolean snitchesDisabled) {
+        if (!snitchesDisabled) {
+            LOGGER.warn("Micronaut Snitch is not configured! Please set snitches.id configuration property or set snitches.disabled to true to ignore this warning.");
+        }
+
         return NoopSnitchService.INSTANCE;
     }
 
