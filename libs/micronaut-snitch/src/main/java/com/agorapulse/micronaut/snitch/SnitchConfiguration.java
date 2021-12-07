@@ -17,33 +17,10 @@
  */
 package com.agorapulse.micronaut.snitch;
 
-import io.micronaut.context.annotation.EachProperty;
-import io.micronaut.context.annotation.Parameter;
-
 /**
- * Snitch job configuration.
- *
- * Contains only the name and id.
+ * Main Snitch configuration.
+ * @author Sergio del Amo
  */
-@EachProperty(SnitchConfiguration.PREFIX + ".jobs")
-public class SnitchJobConfiguration {
-
-    private final String name;
-    private String id;
-
-    public SnitchJobConfiguration(@Parameter String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-
+public interface SnitchConfiguration {
+    String PREFIX = "snitches";
 }
