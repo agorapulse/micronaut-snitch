@@ -55,5 +55,5 @@ jobs:
           arguments: check -Dscan.uploadInBackground=false --scan ${{ matrix.versions }}
 
       - name: Show Build Scan
-          if: always()
-          run: cat scan-journal.log
+        if: always()
+        run: cat scan-journal.log
