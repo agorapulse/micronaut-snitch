@@ -28,6 +28,8 @@ dependencies {
     implementation "io.micronaut:micronaut-http-client"
 
     // Micronaut 3 Compatibility
+    annotationProcessor 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'javax.inject:javax.inject:1'
 
     testAnnotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
