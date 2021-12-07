@@ -19,6 +19,9 @@ package com.agorapulse.micronaut.snitch;
 
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
+import io.micronaut.core.naming.Named;
+
+import javax.annotation.Nonnull;
 
 /**
  * Snitch job configuration.
@@ -26,7 +29,7 @@ import io.micronaut.context.annotation.Parameter;
  * Contains only the name and id.
  */
 @EachProperty("snitches.jobs")
-public class SnitchJobConfiguration {
+public class SnitchJobConfiguration implements Named {
 
     private final String name;
     private String id;
@@ -35,6 +38,8 @@ public class SnitchJobConfiguration {
         this.name = name;
     }
 
+    @Override
+    @Nonnull
     public String getName() {
         return name;
     }
