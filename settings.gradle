@@ -33,6 +33,21 @@ buildscript {
     }
 }
 
+plugins {
+    id 'com.gradle.enterprise' version '3.6.1'
+}
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+
+        buildScanPublished { scan ->
+            file("scan-journal.log") << "${new Date()} - ${scan.buildScanId} - ${scan.buildScanUri}\n"
+        }
+    }
+}
+
 apply plugin:  'org.kordamp.gradle.settings'
 
 rootProject.name = 'micronaut-snitch-root'

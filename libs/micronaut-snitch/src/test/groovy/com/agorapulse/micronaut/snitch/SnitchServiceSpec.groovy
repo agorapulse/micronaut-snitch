@@ -49,7 +49,7 @@ class SnitchServiceSpec extends Specification {
 
     void 'no config'() {
         given:
-            context = ApplicationContext.build().start()
+            context = ApplicationContext.builder().start()
         expect:
             context.getBeanDefinitions(SnitchService).size() == 1
             context.getBean(SnitchService) instanceof NoopSnitchService
@@ -73,7 +73,7 @@ class SnitchServiceSpec extends Specification {
 
     void 'just url'() {
         given:
-            context = ApplicationContext.build().properties('micronaut.http.services.snitch.urls': 'https://localhost:12345').start()
+            context = ApplicationContext.builder('micronaut.http.services.snitch.urls': 'https://localhost:12345').start()
         expect:
             context.getBeanDefinitions(SnitchJobConfiguration).size() == 0
             context.getBeanDefinitions(SnitchService).size() == 1
@@ -83,8 +83,7 @@ class SnitchServiceSpec extends Specification {
     void 'test default config'() {
         given:
             context = ApplicationContext
-                    .build()
-                    .properties(
+                    .builder(
                         'snitches.id': 'cafebabe'
                     )
                     .build()
@@ -103,8 +102,7 @@ class SnitchServiceSpec extends Specification {
     void 'test default config interceptor success'() {
         given:
             context = ApplicationContext
-                    .build()
-                    .properties(
+                    .builder(
                             'snitches.id': 'cafebabe'
                     )
                     .build()
@@ -122,8 +120,7 @@ class SnitchServiceSpec extends Specification {
     void 'test default config interceptor failure'() {
         given:
             context = ApplicationContext
-                    .build()
-                    .properties(
+                    .builder(
                             'snitches.id': 'cafebabe'
                     )
                     .build()
@@ -143,8 +140,7 @@ class SnitchServiceSpec extends Specification {
     void 'test rate limit success'() {
         given:
         context = ApplicationContext
-                .build()
-                .properties(
+                .builder(
                         'snitches.id': 'cafebabe'
                 )
                 .build()
@@ -163,8 +159,7 @@ class SnitchServiceSpec extends Specification {
     void 'test multiple config'() {
         given:
             context = ApplicationContext
-                    .build()
-                    .properties(
+                    .builder(
                         'snitches.jobs.cafebabe.id': 'cafebabe',
                         'snitches.jobs.babecafe.id': 'babecafe'
                     )
@@ -186,8 +181,7 @@ class SnitchServiceSpec extends Specification {
     void 'test multiple config annotation driven'() {
         given:
             context = ApplicationContext
-                    .build()
-                    .properties(
+                    .builder(
                             'snitches.jobs.cafebabe.id': 'cafebabe',
                             'snitches.jobs.babecafe.id': 'babecafe'
                     )
@@ -205,8 +199,7 @@ class SnitchServiceSpec extends Specification {
     void 'test multiple and default config'() {
         given:
             context = ApplicationContext
-                    .build()
-                    .properties(
+                    .builder(
                         'snitches.id': 'foobar',
                         'snitches.jobs.cafebabe.id': 'cafebabe',
                         'snitches.jobs.babecafe.id': 'babecafe'

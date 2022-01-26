@@ -11,3 +11,6 @@ dependencies {
     compile 'com.agorapulse:micronaut-snitch:{project-version}'
 }
 ----
+
+TIP: There are variants for older Micronaut versions as well. You can use `micronaut-1.0` or `micronaut-2.0` suffix for
+different versions of Micronaut.
