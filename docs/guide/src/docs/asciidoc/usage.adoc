@@ -1,39 +1,38 @@
 [[_usage]]
 = Usage
 
-The simples use case is to use `@Snitch` annotation on the method executed by the job.
+The simplest use case is to annotate the method executed by the job with `@Snitch`:
 
 ----
 @Snitch
 void doSomething() {
-    /// do something
+    // do something
 }
 ----
 
-If you have multiple configuration you should specify which one to use:
+If you have multiple configurations, you can specify the one to use:
 
 ----
 @Snitch("babecafe")
 void doSomething() {
-    /// do something
+    // do something
 }
 ----
 
-By default, the provider is notified after the method execution, you can change this using `before` property
-of the annotation. In such a case, the report will only send successful messages even if there were an error during the execution.
+By default, the provider is notified after method execution, but you can change this using the `before` annotation property.
+Then the report will only send successful messages, even if an error occurs during execution.
 
 ----
 @Snitch(before = true)
 void doSomething() {
-    /// do something reported at the beginning
+    // do something reported at the beginning
 }
 ----
 
-You may also inject `SnitchService` directly into your service. For multiple configurations environment
-use `@Named` annotation to retrieve the proper instance:
+You may also inject `SnitchService` into your service. For multiple configurations environment,
+use the `@Named` annotation to retrieve a particular instance:
 
 ----
-
 @Singleton
 class MyService {
 
@@ -50,4 +49,3 @@ class MyService {
     }
 }
 ----
-

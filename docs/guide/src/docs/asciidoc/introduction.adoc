@@ -2,4 +2,4 @@
 [[_introduction]]
 = Introduction
 
-Micronaut snitch helps you to keep track of running asynchronous jobs (Quarts, Scheduled).
+Micronaut snitch helps you keep track of running asynchronous jobs (Quartz, Scheduled).
