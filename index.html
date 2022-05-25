@@ -92,7 +92,7 @@ $(addBlockSwitches);
 <h1>Micronaut Snitch</h1>
 <div class="details">
 <span id="author" class="author">Vladimir Orany</span><br>
-<span id="revnumber">version 1.1.3</span>
+<span id="revnumber">version 1.1.3-micronaut-3.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -110,7 +110,7 @@ $(addBlockSwitches);
 <h2 id="_introduction"><a class="anchor" href="#_introduction"></a>1. Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Micronaut snitch helps you to keep track of running asynchronous jobs (Quarts, Scheduled).</p>
+<p>Micronaut snitch helps you keep track of running asynchronous jobs (Quartz, Scheduled).</p>
 </div>
 </div>
 </div>
@@ -128,35 +128,48 @@ dependencies {
 }</pre>
 </div>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+There are variants for older Micronaut versions as well. You can use <code>micronaut-1.0</code> or <code>micronaut-2.0</code> suffix for
+different versions of Micronaut.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_configuration"><a class="anchor" href="#_configuration"></a>3. Configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>By default, the events are sent to Dead Man&#8217;s Snitch (<a href="https://deadmanssnitch.com/" class="bare">https://deadmanssnitch.com/</a>).
-You can set alternative URL by setting <code>snitch.url</code>.</p>
+<p>By default, events are sent to Dead Man&#8217;s Snitch (<a href="https://deadmanssnitch.com/" class="bare">https://deadmanssnitch.com/</a>).
+You can configure an alternative URL by setting <code>snitch.url</code>.</p>
 </div>
 <div class="paragraph">
-<p>You need to configure at least one id for the reporting:</p>
+<p>You must configure at least one id for reporting:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre>snitches:
-    id: mydmsid</pre>
+  id: mydmsid</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Alternatively you can specify more ids for multiple jobs:</p>
+<p>You can also specify ids for multiple jobs:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre>snitches:
-    jobs:
-        cafebabe:
-            id: javababy
-        babecafe:
-            id: babycino</pre>
+  jobs:
+    cafebabe:
+      id: javababy
+    babecafe:
+      id: babycino</pre>
 </div>
 </div>
 </div>
@@ -165,42 +178,42 @@ You can set alternative URL by setting <code>snitch.url</code>.</p>
 <h2 id="_usage"><a class="anchor" href="#_usage"></a>4. Usage</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The simples use case is to use <code>@Snitch</code> annotation on the method executed by the job.</p>
+<p>The simplest use case is to annotate the method executed by the job with <code>@Snitch</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre>@Snitch
 void doSomething() {
-    /// do something
+    // do something
 }</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If you have multiple configuration you should specify which one to use:</p>
+<p>If you have multiple configurations, you can specify the one to use:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre>@Snitch("babecafe")
 void doSomething() {
-    /// do something
+    // do something
 }</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>By default, the provider is notified after the method execution, you can change this using <code>before</code> property
-of the annotation. In such a case, the report will only send successful messages even if there were an error during the execution.</p>
+<p>By default, the provider is notified after method execution, but you can change this using the <code>before</code> annotation property.
+Then the report will only send successful messages, even if an error occurs during execution.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre>@Snitch(before = true)
 void doSomething() {
-    /// do something reported at the beginning
+    // do something reported at the beginning
 }</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You may also inject <code>SnitchService</code> directly into your service. For multiple configurations environment
-use <code>@Named</code> annotation to retrieve the proper instance:</p>
+<p>You may also inject <code>SnitchService</code> into your service. For multiple configurations environment,
+use the <code>@Named</code> annotation to retrieve a particular instance:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -237,8 +250,8 @@ class MyService {
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.1.3<br>
-Last updated 2021-10-07 12:09:55 UTC
+Version 1.1.3-micronaut-3.0<br>
+Last updated 2022-05-25 07:54:17 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
