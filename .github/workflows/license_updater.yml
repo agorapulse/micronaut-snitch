@@ -1,0 +1,38 @@
+name: Libraries Watcher
+on:
+  schedule:
+    - cron:  '0 18 1 1 *'
+  workflow_dispatch:
+jobs:
+  license_format:
+    name: Formats the license headers for a new year
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Java 8
+        uses: actions/setup-java@v3
+        with:
+          distribution: corretto
+          java-version: 8
+          cache: gradle
+      - name: Check (${{ matrix.versions }})
+        uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: licenseFormat
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.AGORAPULSE_BOT_PERSONAL_TOKEN }}
+          commit-message: Reformatted license headers
+          title: Reformatted license headers
+          body: |
+            The license headers has been regenerated.
+          labels: chore
+          assignees: musketyr
+          branch: chore/license-headers
+      - name: Check outputs
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
