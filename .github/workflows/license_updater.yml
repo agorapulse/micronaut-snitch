@@ -1,4 +1,4 @@
-name: Libraries Watcher
+name: License Format
 on:
   schedule:
     - cron:  '0 18 1 1 *'
