@@ -17,7 +17,7 @@ jobs:
           java-version: 8
           cache: gradle
       - name: Check (${{ matrix.versions }})
-        uses: eskatos/gradle-command-action@v1
+        uses: gradle/gradle-command-action@v2
         with:
           arguments: licenseFormat
       - name: Create Pull Request
