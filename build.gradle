@@ -94,6 +94,14 @@ config {
     }
 
     docs {
+        javadoc {
+            autoLinks {
+                enabled = false
+            }
+            aggregate {
+                enabled = false
+            }
+        }
         groovydoc {
             enabled = false
             aggregate {
@@ -117,9 +125,7 @@ nexusPublishing {
 
 allprojects {
     repositories {
-        jcenter()
         mavenCentral()
-        maven { url  "https://dl.bintray.com/agorapulse/libs" }
         maven { url "https://repo.spring.io/release"  }
     }
 
@@ -129,14 +135,21 @@ allprojects {
     }
 }
 
-projects {
+gradleProjects {
     subprojects {
-        dirs(['libs', 'examples']) { Project subproject ->
-            sourceCompatibility = 1.8
-            targetCompatibility = 1.8
+        dirs(['libs']) { Project subproject ->
+            java {
+                toolchain {
+                    languageVersion = JavaLanguageVersion.of(17)
+                }
+            }
 
-            repositories {
-                mavenCentral()
+            micronaut {
+                importMicronautPlatform = true
+                testRuntime 'spock'
+                processing {
+                    incremental false
+                }
             }
 
             // location independent tests (useful for stable CI builds)
@@ -155,24 +168,13 @@ projects {
                 groovyOptions.forkOptions.jvmArgs.add('-Dgroovy.parameters=true')
             }
 
-            dependencies {
-                api platform("org.codehaus.groovy:groovy-bom:$groovyVersion")
-                compile platform("org.codehaus.groovy:groovy-bom:$groovyVersion")
-                implementation platform("org.codehaus.groovy:groovy-bom:$groovyVersion")
-                compileOnly platform("org.codehaus.groovy:groovy-bom:$groovyVersion")
-                testCompile platform("org.codehaus.groovy:groovy-bom:$groovyVersion")
-                testImplementation platform("org.codehaus.groovy:groovy-bom:$groovyVersion")
-            }
-
             // useful for IntelliJ
             task cleanOut(type: Delete) {
                 delete file('out')
             }
 
             clean.dependsOn cleanOut
-        }
 
-        dir('libs') {
             processResources {
                 filesMatching('**/org.codehaus.groovy.runtime.ExtensionModule') {
                     filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [VERSION: version])
@@ -187,10 +189,6 @@ projects {
                 publishing {
                     enabled = true
                 }
-            }
-
-            dependencies {
-                testImplementation group: 'org.spockframework', name: 'spock-core', version: spockVersion
             }
         }
     }
