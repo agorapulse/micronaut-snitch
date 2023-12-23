@@ -28,7 +28,7 @@ import jakarta.annotation.Nonnull;
  *
  * Contains only the name and id.
  */
-@EachProperty("snitches.jobs")
+@EachProperty(SnitchConfiguration.PREFIX + ".jobs")
 public class SnitchJobConfiguration implements Named {
 
     private final String name;
