@@ -8,16 +8,14 @@ jobs:
     name: Formats the license headers for a new year
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup Java 17
-        uses: actions/setup-java@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
-          distribution: corretto
-          java-version: 17
+          distribution: zulu
+          java-version: 25
+      - uses: gradle/actions/setup-gradle@v5
       - name: License Format
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: licenseFormat
+        run: ./gradlew licenseFormat
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v3
