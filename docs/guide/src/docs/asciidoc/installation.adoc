@@ -2,6 +2,7 @@
 = Installation
 
 
+[subs="+attributes"]
 ----
 repositories {
     mavenCentral()
