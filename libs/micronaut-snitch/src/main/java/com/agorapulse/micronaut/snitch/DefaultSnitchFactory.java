@@ -33,7 +33,7 @@ public class DefaultSnitchFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSnitchFactory.class);
 
     @EachBean(SnitchJobConfiguration.class)
-    @Requires(property = "snitches.jobs")
+    @Requires(property = SnitchConfiguration.PREFIX + ".jobs")
     public SnitchService snitchService(SnitchClient client, SnitchJobConfiguration configuration) {
         return new DefaultSnitchService(client, configuration);
     }
@@ -41,7 +41,7 @@ public class DefaultSnitchFactory {
     @Bean
     @Singleton
     @Named("default")
-    @Requires(property = "snitches.id")
+    @Requires(property = SnitchConfiguration.PREFIX + ".id")
     public SnitchService defaultSnitchService(SnitchClient client, @Value("${snitches.id}") String id) {
         SnitchJobConfiguration configuration = new SnitchJobConfiguration("default");
         configuration.setId(id);
@@ -52,8 +52,8 @@ public class DefaultSnitchFactory {
     @Secondary
     @Singleton
     @Named("default")
-    @Requires(missingProperty = "snitches.id")
-    public SnitchService noopSnitchService(@Value("${snitches.disabled:false}") boolean snitchesDisabled) {
+    @Requires(missingProperty = SnitchConfiguration.PREFIX + ".id")
+    public SnitchService noopSnitchService(@Value("${" + SnitchConfiguration.PREFIX + ".disabled:false}") boolean snitchesDisabled) {
         if (!snitchesDisabled) {
             LOGGER.warn("Micronaut Snitch is not configured! Please set snitches.id configuration property or set snitches.disabled to true to ignore this warning.");
         }
